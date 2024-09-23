@@ -29,6 +29,9 @@ You can and should cross-reference sections and sub-sections. We use @citeR and 
 
 The remainder of this paper is structured as follows. @sec-data....
 
+```{r}
+data <- read.csv("../data/analysis_data/piccfsa.csv")
+```
 
 
 # Data {#sec-data}
