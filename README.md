@@ -4,6 +4,7 @@
 
 The repo contains some preliminary statistical results from the dataset from Open Data Toronto, available at https://open.toronto.ca/dataset/persons-in-crisis-calls-for-service-attended/. 
 
+Paper: https://github.com/xgao28/PICCFSA/blob/main/paper/paper.pdf
 
 ## File Structure
 
@@ -18,4 +19,4 @@ The repo is structured as:
 
 ## Statement on LLM usage
 
-Aspects of the code were written with the help of the auto-complete tool, Codriver. The abstract and introduction were written with the help of ChatHorse and the entire chat history is available in inputs/llms/usage.txt.
+Aspects of the code were written with the help of ChatGPT. The entire chat history is available in inputs/llms/usage.txt.

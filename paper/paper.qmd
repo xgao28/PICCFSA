@@ -1,12 +1,12 @@
 ---
-title: "When and Where: Examining Crisis Service Calls in Toronto"
-subtitle: "A Detailed Look at Temporal and Spatial Trends in Crisis Response Calls"
+title: "When and Where: Understanding the Patterns of Emergency Service Calls in Toronto"
+subtitle: "Exploring the Temporal and Spatial Dynamics of Reported Emergency Incidents"
 author: 
   - Xinxiang Gao
 thanks: "Code and data are available at: https://github.com/xgao28/PICCFSA."
 date: today
 date-format: long
-abstract: "First sentence. Second sentence. Third sentence. Fourth sentence."
+abstract: "This paper examines ten years of data on crisis service calls in Toronto, focusing on overdose, Person in Crisis, and suicide-related incidents. Our analysis reveals clear temporal patterns, with overdoses peaking at night and mental health crises spiking in the afternoon. Spatially, certain neighborhoods such as Moss Park and Downtown Yonge East consistently report higher numbers of crisis events. These findings highlight the importance of targeted mental health and substance abuse interventions, as well as resource allocation strategies tailored to specific times and locations."
 format: pdf
 number-sections: true
 bibliography: references.bib
@@ -21,14 +21,32 @@ library(tidyverse)
 library(ggplot2)
 library(gridExtra)
 library(cowplot)
+library(knitr)
 ```
 
 
 # Introduction
 
-@citeR, @tidyverse, @ggplot2, @cowplot, @gridExtra
+The examination of crisis service calls is critical for enhancing public safety and effectively supporting vulnerable populations in urban environments. As mental health issues and substance use continue to rise, it is essential for emergency response services to understand the nature and patterns of crisis situations. Analyzing when and where these calls occur can inform strategic planning, resource allocation, and intervention methods for law enforcement and mental health services. By shedding light on the dynamics of crisis response, we can better equip first responders to address the complex needs of individuals in distress, ultimately fostering safer and more resilient communities.
 
-@opendatatoronto
+This study aims to analyze the temporal and spatial trends of crisis-related incidents in Toronto, as recorded in the Persons in Crisis Calls for Service dataset. The primary objectives are to:
+
+- Identify the most common types of crisis events and their distribution across neighborhoods.
+- Examine the temporal patterns of these events, including daily, weekly, and seasonal trends.
+
+The sections are organized as follows: 
+@sec-data provides a detailed description of the data and its sources, including the context and ethical considerations. @sec-results presents the results using visualizations as well as discusses the implications of the findings, addressing both the practical applications and the limitations of the study. Finally, @sec-conclusion concludes the paper and suggests directions for future research.
+
+
+# Data {#sec-data}
+
+The Persons in Crisis Calls for Service dataset, provided by the Toronto Police Service (TPS), offers a comprehensive view of crisis-related incidents attended by TPS. This dataset includes over 309,000 records from January 1, 2014, to June 26, 2024, focusing on significant event types such as Suicide, Person in Crisis, and Overdose. The dataset captures incidents that required police intervention, excluding those handled by other TPS divisions, such as Parking and Marine. Additionally, the dataset does not contain sensitive information related to individuals in crisis, ensuring that no individual can be identified from the results.
+
+Understanding the nature and patterns of crisis calls is crucial for several reasons. For public safety, identifying high-activity areas and time periods can help in deploying resources more effectively, ensuring quicker response times and better support for individuals in crisis.In terms of resource allocation, insights into the demand for crisis services can inform budgeting and staffing decisions, ensuring that resources are allocated where they are most needed.For policy development, the findings can guide the development of policies and interventions aimed at reducing the incidence of crises and improving community well-being.
+
+To provide a comprehensive overview of the data, we use a combination of text, tables, and visualizations. The following sections describe the key characteristics of the dataset and summarize the main findings.
+
+# Results {#sec-results}
 
 ```{r}
 #| include: false
@@ -37,57 +55,30 @@ library(cowplot)
 data <- read.csv("../data/analysis_data/piccfsa.csv")
 ```
 
-
-# Data {#sec-data}
-
-
-```{r}
-#| label: fig-dow
-#| fig-cap: Event Type Counts Grouped by Day of the Week
+```{r summary_stats}
+#| label: tbl-summary
 #| echo: false
 #| warning: false
 #| message: false
-ggplot(data, aes(x = event_dow, fill = event_type)) + 
-  geom_bar(position = "dodge") + 
-  labs(title = "Event Type Counts Grouped by Day of the Week", 
-       x = "Day of the Week", 
-       y = "Count",
-       fill = "Event Type") +
-  theme_minimal()
+summary_stats <- data %>%
+  group_by(event_type) %>%
+  summarise(
+    total_count = sum(n())
+  ) %>%
+  ungroup()
+
+kable(summary_stats, caption = "Summary Statistics of Crisis Events", align = 'l', booktabs = TRUE)
 ```
 
-```{r}
-#| label: fig-month
-#| fig-cap: Event Type Counts Grouped by the Month
-#| echo: false
-#| warning: false
-#| message: false
-ggplot(data, aes(x = event_month, fill = event_type)) + 
-  geom_bar(position = "dodge") + 
-  labs(title = "Event Type Counts Grouped by the Month", 
-       x = "Month", 
-       y = "Count",
-       fill = "Event Type") +
-  theme_minimal() +
-  coord_flip()
-```
+Over the ten-year period, the dataset reveals significant insights into the nature and frequency of three primary types of crisis events: Overdose, Person in Crisis, and Suicide-related, as summarized in @tbl-summary. Among these, Person in Crisis events are by far the most frequent, comprising more than half of the total incidents.
 
+Overdose: There were a total of 34,097 overdose incidents recorded over the decade. This category includes all cases where an individual required police intervention due to drug or alcohol overdose. The number of overdose incidents highlights the ongoing public health challenge related to substance abuse in the community.
 
-```{r}
-#| label: fig-year
-#| fig-cap: Event Type Counts Grouped by Year
-#| echo: false
-#| warning: false
-#| message: false
+Person in Crisis: With 177,851 incidents, Person in Crisis is the most frequently reported type of event. These incidents involve individuals who are experiencing mental health crises or other forms of distress that necessitate police involvement. The high count underscores the critical need for mental health support and resources within the community.
 
-ggplot(data, aes(x = event_year, fill = event_type)) + 
-  geom_bar(position = "dodge") + 
-  labs(title = "Event Type Counts Grouped by Year", 
-       x = "Year", 
-       y = "Count",
-       fill = "Event Type") +
-  theme_minimal()
-```
+Suicide-related: A total of 97,155 suicide-related incidents were documented. This includes both attempts and situations where there was a risk of suicide, requiring immediate police response. The prevalence of such incidents emphasizes the importance of suicide prevention efforts and access to mental health services.
+
+## Temporal Analysis
 
 ```{r}
 #| label: fig-hour
@@ -110,6 +101,54 @@ ggplot(df_summarized, aes(x = event_hour, y = count, color = event_type, group =
   theme_minimal()
 ```
 
+@fig-hour shows the distribution of event types across the hours of the day. This plot helps identify any daily patterns in the occurrence of crisis events. Overdose incidents, represented in red, peak at night, highlighting the potential need for heightened availability of medical and police services during these hours. Person in Crisis events, shown in green, are most frequent in the afternoon and steadily decline toward evening, suggesting that mental health resources may need to be more accessible during business hours. Suicide-related events, depicted in blue, follow a trend similar to Overdose events but with lower overall counts, peaking in the late afternoon and early evening hours.
+
+
+```{r}
+#| label: fig-dow
+#| fig-cap: Event Type Counts Grouped by Day of the Week
+#| echo: false
+#| warning: false
+#| message: false
+data$event_dow <- factor(data$event_dow, 
+    levels = c("Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"))
+
+
+ggplot(data, aes(x = event_dow, fill = event_type)) + 
+  geom_bar(position = "dodge") + 
+  labs(title = "Event Type Counts Grouped by Day of the Week", 
+       x = "Day of the Week", 
+       y = "Count",
+       fill = "Event Type") +
+  theme_minimal()
+```
+
+@fig-dow illustrates the distribution of event types across the days of the week, showing that Person in Crisis events (green bars) consistently dominate the count across all days. Thursdays have the highest count of all events, while weekends see a marked drop. This could reflect workplace or social stress accumulating during the week, leading to crises toward the week's end. The reduction during weekends may point to fewer reports or different response patterns, offering an opportunity for further investigation.
+
+```{r}
+#| label: fig-month
+#| fig-cap: Event Type Counts Grouped by the Month
+#| echo: false
+#| warning: false
+#| message: false
+month_levels <- c("January", "February", "March", "April", "May", "June",
+                  "July", "August", "September", "October", "November", "December")
+
+data$event_month <- factor(data$event_month, levels = month_levels)
+
+ggplot(data, aes(x = event_month, fill = event_type)) + 
+  geom_bar(position = "dodge") + 
+  labs(title = "Event Type Counts Grouped by the Month", 
+       x = "Month", 
+       y = "Count",
+       fill = "Event Type") +
+  theme_minimal() +
+  coord_flip()
+```
+
+@fig-month displays the distribution of event types across the months of the year, revealing seasonal trends. Person in Crisis events (green bars) consistently have the highest counts throughout the year, followed by Suicide-related events (blue bars). Overdose events (red bars) are the least frequent. May and June see the highest number of events across all categories, while February has the lowest, potentially due to fewer outdoor activities during colder months. These trends may reflect how seasonal factors and societal conditions influence crisis situations.
+
+
 ```{r}
 #| label: fig-date
 #| fig-cap: Event Type Counts Grouped by Date
@@ -121,16 +160,22 @@ df_summarized <- data %>%
   summarise(count = n()) %>%
   ungroup()
 
-# Create the line plot
+df_summarized$event_date <- as.Date(df_summarized$event_date, format = "%Y-%m-%d")
+
 ggplot(df_summarized, aes(x = event_date, y = count, color = event_type, group = event_type)) + 
   geom_smooth() + 
-  labs(title = "Event Type Counts Grouped by Date", 
+  labs(title = "Event Type Counts Over Time", 
        x = "Date", 
        y = "Count", 
        color = "Event Type") +
+  scale_x_date(date_breaks = "1 year", date_labels = "%Y",
+               limits = as.Date(c(min(df_summarized$event_date), max(df_summarized$event_date)))) +
   theme_minimal()
 ```
 
+@fig-date presents the temporal trends of crisis calls over the entire period. Overall, the chart indicates a general upward trend in the number of crisis events, with a significant peak during the pandemic years of 2021 and 2022, coinciding with lockdowns and restrictions. This surge likely reflects the psychological toll of isolation and economic stress, contributing to more frequent mental health crises and overdoses. Another noticeable increase is seen in 2024. These patterns underscore the importance of mental health and substance abuse support during times of social upheaval.
+
+## Spatial analysis
 
 ```{r}
 #| label: fig-hood
@@ -184,9 +229,10 @@ combined_plot <- cowplot::plot_grid(plotlist = plot_list, ncol = 3)
 print(combined_plot)
 ```
 
-```{r}
-#| label: tab_hood
-#| fig-cap: A Look-up Table for Hood Number and Hood Name
+
+
+```{r tab_hood}
+#| label: tbl-hood
 #| echo: false
 #| warning: false
 #| message: false
@@ -200,11 +246,39 @@ neighborhood_table <- data %>%
   rename("hood number" = hood_158,  
          "hood name" = neighbourhood_158)
 
-grid.arrange(grid.table(neighborhood_table))
+kable(neighborhood_table, caption = "A Look-up Table for Hood Number and Hood Name", 
+             booktabs = TRUE, align = 'l', label = "tab-hood")
 ```
 
+@fig-hood showcases the top 10 neighborhoods with the highest counts for each event type. Moreover, @tbl-hood provides a lookup table for the neighborhood numbers and their corresponding names, which can be used to interpret the neighborhood codes in the previous plots. To illustrate, Moss Park and Downtown Yonge East have the most reported cases for all three event types, with Overdose incidents dominating other neighborhoods. The high counts in these areas may be linked to population density, socioeconomic challenges, or proximity to services like shelters and social support networks. Kensington-Chinatown ranks third for Person in Crisis events, while Annex ranks third for Suicide-related events. These findings suggest that certain neighborhoods may require targeted interventions based on the specific crisis patterns observed.
 
+# Conclusion {#sec-conclusion}
 
+The analysis of the Persons in Crisis Calls for Service dataset reveals meaningful patterns in both the temporal and spatial distribution of crisis-related events in Toronto over the past decade. Overdose, Person in Crisis, and Suicide-related incidents exhibit distinct daily, weekly, and seasonal trends. Overdose incidents peak at night, Person in Crisis events are most frequent in the afternoon, and Suicide-related incidents show a steady occurrence during the late afternoon and early evening. Additionally, Thursdays see the highest volume of crisis calls across all types, while weekends have lower incident counts. These temporal patterns provide valuable insight for optimizing resource allocation and tailoring response strategies to times of greatest need.
+
+Spatially, certain neighborhoods, such as Moss Park and Downtown Yonge East, show consistently high rates of crisis incidents, particularly for overdoses. These findings highlight the need for targeted interventions in high-risk areas, which could be related to local socioeconomic factors or population density. Understanding both the temporal and spatial dynamics of crisis events is crucial for improving emergency response efforts and supporting the communities most affected.
+
+Understanding when and where these crisis events are most likely to occur is critical for resource allocation and emergency response planning. By highlighting the neighborhoods and time frames with higher incident rates, this analysis offers actionable insights for policymakers and service providers to improve crisis response strategies, ultimately enhancing public safety and community well-being.
+
+This dataset also contains additional information that could further enrich the analysis, such as the police division of the event, whether an official occurrence was created, and whether a Mental Health Act (MHA) apprehension was made. Future work could explore the impact of these factors on crisis management and resolution. Additionally, while this dataset focuses on three main crisis types, expanding the scope to include more detailed emergency call categories could offer a more comprehensive understanding of Toronto’s broader crisis response landscape, providing deeper insights into the city's emergency response system.
+
+# Acknowledgements
+
+We would like to express our gratitude to the developers and contributors of R [@citeR] as well as several R packages that were essential for the analysis and visualization of the data in this report. The following R packages provided indispensable tools and functionalities:
+
+- tidyverse [@tidyverse]: A collection of R packages designed for data science, including dplyr, ggplot2, readr, purrr, and others, which greatly facilitated data manipulation, analysis, and visualization.
+
+- ggplot2 [@ggplot2]: An implementation of the Grammar of Graphics, which allowed us to create complex and aesthetically pleasing visualizations with ease.
+
+- cowplot [@cowplot]: The package enabled us to combine multiple plots into a single figure, enhancing the presentation of our results.
+
+- lubridate [@lubridate]: This package made it straightforward to work with date and time data, simplifying the process of manipulating and analyzing temporal information.
+
+- knitr [@knitr]: This package was crucial for integrating R code and its output directly into the document, allowing for reproducible research and dynamic report generation.
+
+Additionally, we are grateful to the City of Toronto and the Open Data Portal for providing access to the dataset through the opendatatoronto package [@opendatatoronto]. The availability of such high-quality, open-source data is vital for conducting meaningful and impactful research.
+
+Finally, we would like to thank all those who contributed to the development and maintenance of the R programming language and its ecosystem, as well as the broader open-source community, whose efforts make such research possible.
 
 \newpage
 
