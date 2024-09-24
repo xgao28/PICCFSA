@@ -19,6 +19,8 @@ bibliography: references.bib
 
 library(tidyverse)
 library(ggplot2)
+library(gridExtra)
+library(cowplot)
 ```
 
 
@@ -29,6 +31,9 @@ library(ggplot2)
 @opendatatoronto
 
 ```{r}
+#| include: false
+#| warning: false
+#| message: false
 data <- read.csv("../data/analysis_data/piccfsa.csv")
 ```
 
@@ -37,10 +42,11 @@ data <- read.csv("../data/analysis_data/piccfsa.csv")
 
 
 ```{r}
-#| label: fig-bills
-#| fig-cap: Bills of penguins
+#| label: fig-dow
+#| fig-cap: Event Type Counts Grouped by Day of the Week
 #| echo: false
-#| 
+#| warning: false
+#| message: false
 ggplot(data, aes(x = event_dow, fill = event_type)) + 
   geom_bar(position = "dodge") + 
   labs(title = "Event Type Counts Grouped by Day of the Week", 
@@ -51,10 +57,15 @@ ggplot(data, aes(x = event_dow, fill = event_type)) +
 ```
 
 ```{r}
+#| label: fig-month
+#| fig-cap: Event Type Counts Grouped by the Month
+#| echo: false
+#| warning: false
+#| message: false
 ggplot(data, aes(x = event_month, fill = event_type)) + 
   geom_bar(position = "dodge") + 
-  labs(title = "Event Type Counts Grouped by Day of the Week", 
-       x = "Day of the Week", 
+  labs(title = "Event Type Counts Grouped by the Month", 
+       x = "Month", 
        y = "Count",
        fill = "Event Type") +
   theme_minimal() +
@@ -62,13 +73,9 @@ ggplot(data, aes(x = event_month, fill = event_type)) +
 ```
 
 
-Talk more about it.
-
-And also planes (@fig-planes). (You can change the height and width, but don't worry about doing that until you have finished every other aspect of the paper - Quarto will try to make it look nice and the defaults usually work well once you have enough text.)
-
 ```{r}
-#| label: fig-planes
-#| fig-cap: Relationship between wing length and width
+#| label: fig-year
+#| fig-cap: Event Type Counts Grouped by Year
 #| echo: false
 #| warning: false
 #| message: false
@@ -83,6 +90,11 @@ ggplot(data, aes(x = event_year, fill = event_type)) +
 ```
 
 ```{r}
+#| label: fig-hour
+#| fig-cap: Event Type Counts Grouped by Hour of the Day
+#| echo: false
+#| warning: false
+#| message: false
 df_summarized <- data %>%
   group_by(event_hour, event_type) %>%
   summarise(count = n()) %>%
@@ -99,8 +111,33 @@ ggplot(df_summarized, aes(x = event_hour, y = count, color = event_type, group =
 ```
 
 ```{r}
-library(cowplot)  # For combining plots
+#| label: fig-date
+#| fig-cap: Event Type Counts Grouped by Date
+#| echo: false
+#| warning: false
+#| message: false
+df_summarized <- data %>%
+  group_by(event_date, event_type) %>%
+  summarise(count = n()) %>%
+  ungroup()
 
+# Create the line plot
+ggplot(df_summarized, aes(x = event_date, y = count, color = event_type, group = event_type)) + 
+  geom_smooth() + 
+  labs(title = "Event Type Counts Grouped by Date", 
+       x = "Date", 
+       y = "Count", 
+       color = "Event Type") +
+  theme_minimal()
+```
+
+
+```{r}
+#| label: fig-hood
+#| fig-cap: Event Counts in Neighbourhood Grouped by Event Type
+#| echo: false
+#| warning: false
+#| message: false
 # Step 1: Summarize the data by counting occurrences of each event_type
 df_summarized <- data %>%
   group_by(hood_158, event_type) %>%
@@ -113,6 +150,7 @@ event_types <- unique(df_summarized$event_type)
 # Create a list to hold the top 10 data frames and plots
 df_list <- list()
 plot_list <- list()
+hood_list <- c()
 
 for (event in event_types) {
   # Filter the top 10 neighborhoods for the current event type
@@ -123,6 +161,7 @@ for (event in event_types) {
   
   # Save the data frame to the list
   df_list[[event]] <- df_top10
+  hood_list <- c(hood_list, df_top10$hood_158)
   
   # Step 3: Create a bar plot for the top 10 neighborhoods for the current event type
   plot <- ggplot(df_top10, aes(x = reorder(hood_158, count), y = count)) + 
@@ -138,22 +177,31 @@ for (event in event_types) {
   plot_list[[event]] <- plot
 }
 
-# Step 4: Get a look-up table
-neighborhood_table <- data %>%
-  select(hood_158, neighbourhood_158) %>%
-  distinct() %>%
-  arrange(hood_158)
+# Step 4: Combine the individual plots using cowplot
+combined_plot <- cowplot::plot_grid(plotlist = plot_list, ncol = 3)
 
-# Convert the table to a grid object using gridExtra::tableGrob
-table_plot <- gridExtra::tableGrob(neighborhood_table)
-
-# Step 5: Combine the individual plots using cowplot
-combined_plot <- cowplot::plot_grid(plotlist = plot_list, ncol = 1)
-
-# Step 6: Display the combined plot
+# Step 5: Display the combined plot
 print(combined_plot)
 ```
 
+```{r}
+#| label: tab_hood
+#| fig-cap: A Look-up Table for Hood Number and Hood Name
+#| echo: false
+#| warning: false
+#| message: false
+# Step: Get a look-up table
+hood_set <- unique(hood_list)
+neighborhood_table <- data %>%
+  select(hood_158, neighbourhood_158) %>%
+  distinct() %>%
+  filter(hood_158 %in% hood_set) %>%
+  arrange(hood_158) %>%
+  rename("hood number" = hood_158,  
+         "hood name" = neighbourhood_158)
+
+grid.arrange(grid.table(neighborhood_table))
+```
 
 
 
