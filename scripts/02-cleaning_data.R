@@ -7,7 +7,6 @@
 
 data <- read.csv("data/raw_data/raw_piccfsa.csv")
 
-colnames(data)
 data_1 <- data %>% janitor::clean_names() %>% 
   select(-x_id, -hood_140, -neighbourhood_140)
   

@@ -1,10 +1,9 @@
 ---
-title: "My title"
-subtitle: "My subtitle if needed"
+title: "When and Where: Examining Crisis Service Calls in Toronto"
+subtitle: "A Detailed Look at Temporal and Spatial Trends in Crisis Response Calls"
 author: 
-  - First author
-  - Another author
-thanks: "Code and data are available at: LINK."
+  - Xinxiang Gao
+thanks: "Code and data are available at: https://github.com/xgao28/PICCFSA."
 date: today
 date-format: long
 abstract: "First sentence. Second sentence. Third sentence. Fourth sentence."
@@ -19,15 +18,15 @@ bibliography: references.bib
 #| message: false
 
 library(tidyverse)
-library(palmerpenguins)
+library(ggplot2)
 ```
 
 
 # Introduction
 
-You can and should cross-reference sections and sub-sections. We use @citeR and @rohan.
+@citeR, @tidyverse, @ggplot2, @cowplot, @gridExtra
 
-The remainder of this paper is structured as follows. @sec-data....
+@opendatatoronto
 
 ```{r}
 data <- read.csv("../data/analysis_data/piccfsa.csv")
@@ -36,21 +35,32 @@ data <- read.csv("../data/analysis_data/piccfsa.csv")
 
 # Data {#sec-data}
 
-Some of our data is of penguins (@fig-bills), from @palmerpenguins.
 
 ```{r}
 #| label: fig-bills
 #| fig-cap: Bills of penguins
 #| echo: false
+#| 
+ggplot(data, aes(x = event_dow, fill = event_type)) + 
+  geom_bar(position = "dodge") + 
+  labs(title = "Event Type Counts Grouped by Day of the Week", 
+       x = "Day of the Week", 
+       y = "Count",
+       fill = "Event Type") +
+  theme_minimal()
+```
 
-ggplot(penguins, aes(x = island, fill = species)) +
-  geom_bar(alpha = 0.8) +
-  scale_fill_manual(values = c("darkorange","purple","cyan4"),
-                    guide = "none") +
+```{r}
+ggplot(data, aes(x = event_month, fill = event_type)) + 
+  geom_bar(position = "dodge") + 
+  labs(title = "Event Type Counts Grouped by Day of the Week", 
+       x = "Day of the Week", 
+       y = "Count",
+       fill = "Event Type") +
   theme_minimal() +
-  facet_wrap(~species, ncol = 1) +
   coord_flip()
 ```
+
 
 Talk more about it.
 
@@ -63,156 +73,88 @@ And also planes (@fig-planes). (You can change the height and width, but don't w
 #| warning: false
 #| message: false
 
-analysis_data <- read_csv(here::here("data/analysis_data/analysis_data.csv"))
-
-analysis_data |> 
-  ggplot(aes(x = width, y = length)) +
-  geom_point(alpha = 0.8) +
-  theme_minimal() +
-  labs(x = "Wing width (mm)",
-       y = "Wing length (mm)")
-```
-
-Talk way more about it. 
-
-
-
-# Model
-
-The goal of our modelling strategy is twofold. Firstly,...
-
-Here we briefly describe the Bayesian analysis model used to investigate... Background details and diagnostics are included in [Appendix -@sec-model-details].
-
-## Model set-up
-
-Define $y_i$ as the number of seconds that the plane remained aloft. Then $\beta_i$ is the wing width and $\gamma_i$ is the wing length, both measured in millimeters.  
-
-\begin{align} 
-y_i|\mu_i, \sigma &\sim \mbox{Normal}(\mu_i, \sigma) \\
-\mu_i &= \alpha + \beta_i + \gamma_i\\
-\alpha &\sim \mbox{Normal}(0, 2.5) \\
-\beta &\sim \mbox{Normal}(0, 2.5) \\
-\gamma &\sim \mbox{Normal}(0, 2.5) \\
-\sigma &\sim \mbox{Exponential}(1)
-\end{align}
-
-We run the model in R [@citeR] using the `rstanarm` package of @rstanarm. We use the default priors from `rstanarm`.
-
-
-### Model justification
-
-We expect a positive relationship between the size of the wings and time spent aloft. In particular...
-
-We can use maths by including latex between dollar signs, for instance $\theta$.
-
-
-# Results
-
-Our results are summarized in @tbl-modelresults.
-
-```{r}
-#| echo: false
-#| eval: true
-#| warning: false
-#| message: false
-
-library(rstanarm)
-
-first_model <-
-  readRDS(file = here::here("models/first_model.rds"))
+ggplot(data, aes(x = event_year, fill = event_type)) + 
+  geom_bar(position = "dodge") + 
+  labs(title = "Event Type Counts Grouped by Year", 
+       x = "Year", 
+       y = "Count",
+       fill = "Event Type") +
+  theme_minimal()
 ```
 
 ```{r}
-#| echo: false
-#| eval: true
-#| label: tbl-modelresults
-#| tbl-cap: "Explanatory models of flight time based on wing width and wing length"
-#| warning: false
+df_summarized <- data %>%
+  group_by(event_hour, event_type) %>%
+  summarise(count = n()) %>%
+  ungroup()
 
-modelsummary::modelsummary(
-  list(
-    "First model" = first_model
-  ),
-  statistic = "mad",
-  fmt = 2
-)
+# Create the line plot
+ggplot(df_summarized, aes(x = event_hour, y = count, color = event_type, group = event_type)) + 
+  geom_line() + 
+  labs(title = "Event Type Counts Grouped by Hour", 
+       x = "Hour", 
+       y = "Count", 
+       color = "Event Type") +
+  theme_minimal()
 ```
-
-
-
-
-# Discussion
-
-## First discussion point {#sec-first-point}
-
-If my paper were 10 pages, then should be be at least 2.5 pages. The discussion is a chance to show off what you know and what you learnt from all this. 
-
-## Second discussion point
-
-## Third discussion point
-
-## Weaknesses and next steps
-
-Weaknesses and next steps should also be included.
-
-\newpage
-
-\appendix
-
-# Appendix {-}
-
-
-# Additional data details
-
-# Model details {#sec-model-details}
-
-## Posterior predictive check
-
-In @fig-ppcheckandposteriorvsprior-1 we implement a posterior predictive check. This shows...
-
-In @fig-ppcheckandposteriorvsprior-2 we compare the posterior with the prior. This shows... 
 
 ```{r}
-#| eval: true
-#| echo: false
-#| message: false
-#| warning: false
-#| label: fig-ppcheckandposteriorvsprior
-#| layout-ncol: 2
-#| fig-cap: "Examining how the model fits, and is affected by, the data"
-#| fig-subcap: ["Posterior prediction check", "Comparing the posterior with the prior"]
+library(cowplot)  # For combining plots
 
-pp_check(first_model) +
-  theme_classic() +
-  theme(legend.position = "bottom")
+# Step 1: Summarize the data by counting occurrences of each event_type
+df_summarized <- data %>%
+  group_by(hood_158, event_type) %>%
+  summarise(count = n()) %>%
+  ungroup()
 
-posterior_vs_prior(first_model) +
-  theme_minimal() +
-  scale_color_brewer(palette = "Set1") +
-  theme(legend.position = "bottom") +
-  coord_flip()
+# Step 2: Split the summarized data into separate data frames for each event_type
+event_types <- unique(df_summarized$event_type)
+
+# Create a list to hold the top 10 data frames and plots
+df_list <- list()
+plot_list <- list()
+
+for (event in event_types) {
+  # Filter the top 10 neighborhoods for the current event type
+  df_top10 <- df_summarized %>%
+    filter(event_type == event) %>%
+    arrange(desc(count)) %>%
+    head(10)
+  
+  # Save the data frame to the list
+  df_list[[event]] <- df_top10
+  
+  # Step 3: Create a bar plot for the top 10 neighborhoods for the current event type
+  plot <- ggplot(df_top10, aes(x = reorder(hood_158, count), y = count)) + 
+    geom_bar(stat = "identity") + 
+    labs(title = event, 
+         x = "Neighborhood 158", 
+         y = "Count") +
+    theme_minimal() +
+    theme(axis.text.x = element_text(angle = 45, hjust = 1)) +
+    coord_flip()
+  
+  # Save the plot to the list
+  plot_list[[event]] <- plot
+}
+
+# Step 4: Get a look-up table
+neighborhood_table <- data %>%
+  select(hood_158, neighbourhood_158) %>%
+  distinct() %>%
+  arrange(hood_158)
+
+# Convert the table to a grid object using gridExtra::tableGrob
+table_plot <- gridExtra::tableGrob(neighborhood_table)
+
+# Step 5: Combine the individual plots using cowplot
+combined_plot <- cowplot::plot_grid(plotlist = plot_list, ncol = 1)
+
+# Step 6: Display the combined plot
+print(combined_plot)
 ```
 
-## Diagnostics
 
-@fig-stanareyouokay-1 is a trace plot. It shows... This suggests...
-
-@fig-stanareyouokay-2 is a Rhat plot. It shows... This suggests...
-
-```{r}
-#| echo: false
-#| eval: true
-#| message: false
-#| warning: false
-#| label: fig-stanareyouokay
-#| fig-cap: "Checking the convergence of the MCMC algorithm"
-#| fig-subcap: ["Trace plot", "Rhat plot"]
-#| layout-ncol: 2
-
-plot(first_model, "trace")
-
-plot(first_model, "rhat")
-```
 
 
 
