@@ -10,7 +10,7 @@ Paper: https://github.com/xgao28/PICCFSA/blob/main/paper/paper.pdf
 
 The repo is structured as follows:
 
--   `data/raw_data` contains the raw data as obtained from Open Data Toronto.
+-   `data/raw_data` contains the raw data as obtained from Open Data Toronto and the simulated data.
 -   `data/analysis_data` contains the cleaned dataset that was constructed.
 -   `other/llm` contains details about LLM chat interactions.
 -   `paper` contains the files used to generate the paper, including the Quarto document and reference bibliography file, as well as the PDF of the paper. 

@@ -110,9 +110,6 @@ ggplot(df_summarized, aes(x = event_hour, y = count, color = event_type, group =
 #| echo: false
 #| warning: false
 #| message: false
-data$event_dow <- factor(data$event_dow, 
-    levels = c("Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"))
-
 
 ggplot(data, aes(x = event_dow, fill = event_type)) + 
   geom_bar(position = "dodge") + 
@@ -131,11 +128,6 @@ ggplot(data, aes(x = event_dow, fill = event_type)) +
 #| echo: false
 #| warning: false
 #| message: false
-month_levels <- c("January", "February", "March", "April", "May", "June",
-                  "July", "August", "September", "October", "November", "December")
-
-data$event_month <- factor(data$event_month, levels = month_levels)
-
 ggplot(data, aes(x = event_month, fill = event_type)) + 
   geom_bar(position = "dodge") + 
   labs(title = "Event Type Counts Grouped by the Month", 
@@ -275,6 +267,8 @@ We would like to express our gratitude to the developers and contributors of R [
 - lubridate [@lubridate]: This package made it straightforward to work with date and time data, simplifying the process of manipulating and analyzing temporal information.
 
 - knitr [@knitr]: This package was crucial for integrating R code and its output directly into the document, allowing for reproducible research and dynamic report generation.
+
+- janitor [@janitor]: This package provided helpful tools for data cleaning. Its functionalities greatly enhanced the efficiency and accuracy of our data preparation process.
 
 Additionally, we are grateful to the City of Toronto and the Open Data Portal for providing access to the dataset through the opendatatoronto package [@opendatatoronto]. The availability of such high-quality, open-source data is vital for conducting meaningful and impactful research.
 
