@@ -23,29 +23,42 @@ library(ggplot2)
 library(gridExtra)
 library(cowplot)
 library(knitr)
+library(styler)
 ```
 
 
 # Introduction
 
-The examination of crisis service calls is critical for enhancing public safety and effectively supporting vulnerable populations in urban environments. As mental health issues and substance use continue to rise, it is essential for emergency response services to understand the nature and patterns of crisis situations. Analyzing when and where these calls occur can inform strategic planning, resource allocation, and intervention methods for law enforcement and mental health services. By shedding light on the dynamics of crisis response, we can better equip first responders to address the complex needs of individuals in distress, ultimately fostering safer and more resilient communities.
+The examination of crisis service calls is critical for enhancing public safety and effectively supporting vulnerable populations in urban environments. As mental health issues and substance use continue to rise, it is essential for emergency response services to understand the nature and patterns of crisis situations. Analyzing when and where these calls occur can inform strategic planning, resource allocation, and intervention methods for law enforcement and mental health services. By discovering on the dynamics of crisis response, we can better equip first responders to address the complex needs of individuals in distress, ultimately fostering safer and more resilient communities.
 
 This study aims to analyze the temporal and spatial trends of crisis-related incidents in Toronto, as recorded in the Persons in Crisis Calls for Service dataset. The primary objectives are to:
 
 - Identify the most common types of crisis events and their distribution across neighborhoods.
-- Examine the temporal patterns of these events, including daily, weekly, and seasonal trends.
+- Examine the temporal patterns of these events, including daily, weekly, seasonal and long-term trends.
 
 The main sections are organized as follows: 
-@sec-data provides a detailed description of the data and its sources, including the context and ethical considerations. @sec-results presents the results using visualizations as well as discusses the implications of the findings, addressing both the practical applications and the limitations of the study. @sec-conclusion concludes the paper and suggests directions for future research.
-
+@sec-data provides a detailed description of the data and its sources, including the context, limitations and ethical considerations. @sec-results presents the analysis through a series of figures and tables, interpreting key patterns in the timing, location, and frequency of crisis-related incidents, and discussing their practical implications. @sec-conclusion summarizes the findings, connects them with relevant literature on housing insecurity and mental health, and discusses how this analysis can inform future research and policy decisions for crisis management.
 
 # Data {#sec-data}
 
-The Persons in Crisis Calls for Service dataset, provided by the Toronto Police Service (TPS), offers a comprehensive view of crisis-related incidents attended by TPS. This dataset includes over 309,000 records from January 1, 2014, to June 30, 2024, focusing on significant event types such as Suicide, Person in Crisis, and Overdose. The dataset captures incidents that required police intervention, excluding those handled by other TPS divisions, such as Parking and Marine. Additionally, the dataset does not contain sensitive information related to individuals in crisis, ensuring that no individual can be identified from the results.
+## Data Overview
 
+The Persons in Crisis Calls for Service dataset offers a comprehensive view of crisis-related incidents attended by TPS. This dataset includes over 309,000 records from January 1, 2014, to June 30, 2024, focusing on significant event types such as Suicide, Person in Crisis, and Overdose. The dataset captures incidents that required police intervention, excluding those handled by other TPS divisions, such as Parking and Marine. Additionally, the dataset does not contain sensitive information related to individuals in crisis, ensuring that no individual can be identified from the results.
+
+The dataset consists of 10 primary variables after cleaning[^1], focusing on unique identifiers and categorizing event types, along with associated spatial and temporal information.
+
+[^1]: A comprehensive description of the data cleaning process, including the procedures, motivations, and variable definitions, can be found in [Section 5.2](#sec-dc).
+
+
+## Data Collection Process
+Each entry in the dataset reflects a real-world crisis event attended by TPS officers. The data are based on police dispatch logs, meaning that a record is generated whenever officers respond to an event. The event types represent a wide range of crises, such as suicide attempts or overdose situations, and the TPS categorizes each event based on agency-specified fields.
+
+The dataset is queried by the date the event was reported, not necessarily the date of occurrence, which may introduce a slight reporting delay for some incidents. Privacy considerations, particularly the offsetting of locations to the nearest road intersection node, limit geographic precision. While the dataset does include neighbourhood and police division information, these are approximate.
+
+
+## Practical Implications
 Understanding the nature and patterns of crisis calls is foundational for several reasons. For public safety, identifying high-activity areas and time periods can help in deploying resources more effectively, ensuring quicker response times and better support for individuals in crisis.In terms of resource allocation, statistical results towards the demand for crisis services can inform budgeting and staffing decisions, ensuring that resources are allocated where they are most needed.For policy development, the findings can guide the development of policies and interventions aimed at reducing the incidence of crises and improving community well-being.
 
-To provide a comprehensive overview of the data, we use a combination of text, tables, and visualizations. The following sections describe the key characteristics of the dataset and summarize the main findings.
 
 # Results {#sec-results}
 
@@ -293,13 +306,28 @@ We would like to express our gratitude to the developers and contributors of R [
 
 - `janitor` [@janitor]: This package provided helpful tools for data cleaning. Its functionalities greatly enhanced the efficiency and accuracy of our data preparation process.
 
+- `styler` [@styler]: This package is helpful for styling the code.
+
 Additionally, we are grateful to the City of Toronto and the Open Data Portal for providing access to the dataset through the opendatatoronto package [@opendatatoronto]. The availability of such high-quality, open-source data is vital for conducting meaningful and impactful research.
 
 Finally, we would like to thank all those who contributed to the development and maintenance of the R programming language and its ecosystem, as well as the broader open-source community, whose efforts make such research possible.
 
-## Data Cleaning
+## Data Cleaning {#sec-dc}
 
-In the data cleaning process, the raw dataset was first read from a CSV file and unnecessary columns, including identifiers and irrelevant variables, were removed. The janitor package was used to clean the column names for consistency. Instances of the value "NSA" in character columns were replaced with NA, and any rows containing NA values were subsequently dropped. To ensure proper ordering in visualizations, the day of the week and month were converted to factors with defined levels. Finally, the cleaned dataset was saved as a new CSV file for further analysis. The cleaned dataset contains over 297,000 observations of 10 variables.
+In the data cleaning process, the raw dataset was first read from a CSV file and irrelevant variables, were removed. The janitor package was used to clean the column names for consistency. Instances of the value "NSA" in character columns were replaced with NA, and any rows containing NA values were subsequently dropped. To ensure proper ordering in visualizations, the day of the week and month were converted to factors with defined levels. Finally, the cleaned dataset was saved as a new CSV file for further analysis. The cleaned dataset contains over 297,000 observations of 10 variables:
+
+- `objectid`: A unique identifier for each record.
+- `event_id`: A numeric identifier for the event, distinct from the object ID.
+- `event_date`: The exact date when the event occurred, used for time-based analysis.
+- `event_year`: The year in which the event occurred, facilitating yearly trend analysis.
+- `event_month`: The month of the event, converted into an ordered factor for proper ordering in visualizations.
+- `event_dow`: The day of the week on which the event occurred, also converted to an ordered factor.
+- `event_hour`: The hour the call was received, for discovering time-of-day patterns for crisis incidents.
+- `event_type`: A field that categorizes the event, with possible values including Suicide-related, Person in Crisis, and Overdose.
+- `hood_158`: The identifier of the neighbourhood using the City of Toronto’s new 158-neighbourhood structure.
+- `neighbourhood_158`: The name of the neighbourhood, corresponding to the new 158-neighbourhood structure.
+
+In terms of unnecessary columns, the raw dataset contains several additional variables, including `DIVISION`, `OCCURRENCE_CREATED`, `APPREHENSION_MADE`, `HOOD_140`, and `NEIGHBOURHOOD_140`, which were not the focus of our research. Our analysis centers specifically on the temporal and spatial patterns of crisis incidents rather than the effects of intervention by TPS. Consequently, we chose to remove these columns to streamline our dataset and concentrate on the variables most relevant to our research objectives. Specifically, we opted to exclude `HOOD_140` and `NEIGHBOURHOOD_140` in favor of the newer 158-neighbourhood labeling system to ensure our analysis reflects the most current geographic designations.
 
 \newpage
 
