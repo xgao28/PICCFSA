@@ -35,8 +35,8 @@ This study aims to analyze the temporal and spatial trends of crisis-related inc
 - Identify the most common types of crisis events and their distribution across neighborhoods.
 - Examine the temporal patterns of these events, including daily, weekly, and seasonal trends.
 
-The sections are organized as follows: 
-@sec-data provides a detailed description of the data and its sources, including the context and ethical considerations. @sec-results presents the results using visualizations as well as discusses the implications of the findings, addressing both the practical applications and the limitations of the study. Finally, @sec-conclusion concludes the paper and suggests directions for future research.
+The main sections are organized as follows: 
+@sec-data provides a detailed description of the data and its sources, including the context and ethical considerations. @sec-results presents the results using visualizations as well as discusses the implications of the findings, addressing both the practical applications and the limitations of the study. @sec-conclusion concludes the paper and suggests directions for future research.
 
 
 # Data {#sec-data}
@@ -81,7 +81,7 @@ summary_stats <- data %>%
 kable(summary_stats, caption = "Summary Statistics of Crisis Events", align = 'l', booktabs = TRUE)
 ```
 
-## Overview
+## Result Overview
 Over the ten-year period, the dataset reveals the nature and frequency of three primary types of crisis events: Overdose, Person in Crisis, and Suicide-related, as summarized in @tbl-summary. Among these, Person in Crisis events are by far the most frequent, comprising more than half of the total incidents.
 
 - Overdose: There were a total of 32,494 overdose incidents recorded over the decade. This category includes all cases where an individual required police intervention due to drug or alcohol overdose. The number of overdose incidents highlights the ongoing public health challenge related to substance abuse in the community.
@@ -268,13 +268,16 @@ kable(neighborhood_table, caption = "Hood Number and Name Reference",
 
 The analysis of the Persons in Crisis Calls for Service dataset shows notable patterns in the timing and location of crisis-related incidents in Toronto over the past decade. Overdose, Person in Crisis, and Suicide-related events each follow distinct daily, weekly, and seasonal cycles. Overdoses tend to occur most frequently at night, Person in Crisis calls are most common in the afternoon, and Suicide-related incidents maintain a steady rate during late afternoon and early evening. Thursdays experience the highest volume of crisis calls across all types, while weekends typically have fewer incidents. These time-based trends help guide the allocation of resources and the adjustment of response plans to align with periods of greatest demand.
 
-In terms of location, areas like Moss Park and Downtown Yonge East consistently report high numbers of crisis calls, particularly for overdoses. These findings suggest the need for focused interventions in these neighborhoods, potentially influenced by socioeconomic conditions or population density. Recognizing both the temporal and geographic patterns of crisis incidents is key to enhancing emergency response strategies and supporting the areas most impacted.
+In terms of location, areas like Moss Park and Downtown Yonge East consistently report high numbers of crisis calls, particularly for overdoses. These findings suggest the need for focused interventions in these neighborhoods, potentially influenced by socioeconomic conditions or population density. Notably, Moss Park is one of Toronto’s main encampment sites, and the research on pandemic encampments by @edhi2022pandemic provides a complementary perspective on the broader social context within which these crises occur. The study highlights that the City of Toronto has been experiencing one of its deepest housing crises, with homeless encampments serving as sites of resistance against systemic violence and insufficient interventions. The displacement and criminalization of unhoused residents during the pandemic underscore the intersectionality of housing insecurity and mental health crises. As such, addressing the root causes of homelessness, including the lack of affordable housing and supportive services, could contribute to reducing the frequency of crisis calls, especially in areas with high concentrations of vulnerable populations. Integrating a human rights-based approach to housing and crisis management, as advocated by Edhi, can provide a more holistic framework for responding to and preventing these emergencies, thereby fostering a more equitable and resilient urban environment.
 
 Knowing when and where these incidents are most likely to happen is vital for planning emergency response efforts and distributing resources effectively. By identifying neighborhoods and time periods with higher incident rates, this analysis offers practical guidance for policymakers and service providers to improve crisis management, ultimately contributing to public safety and community well-being.
 
-The dataset also includes additional information that could deepen the analysis, such as police division details, whether an official occurrence was logged, and whether a Mental Health Act (MHA) apprehension occurred. Future studies could examine how these elements influence crisis resolution. Moreover, although this dataset focuses on three crisis types, incorporating a broader range of emergency call categories could provide a more detailed understanding of Toronto's crisis response landscape.
+In terms of future work, the dataset also includes additional information that could deepen the analysis, such as police division details, whether an official occurrence was logged, and whether a Mental Health Act (MHA) apprehension occurred. Future studies could examine how these elements influence crisis resolution. Moreover, although this dataset focuses on three crisis types, incorporating a broader range of emergency call categories could provide a more detailed understanding of Toronto's crisis response landscape.
 
-# Acknowledgements
+
+# Appendix {#sec-app}
+
+## Acknowledgements
 
 We would like to express our gratitude to the developers and contributors of R [@citeR] as well as several R packages that were essential for the analysis and visualization of the data in this report. The following R packages provided indispensable tools and functionalities:
 
@@ -293,8 +296,6 @@ We would like to express our gratitude to the developers and contributors of R [
 Additionally, we are grateful to the City of Toronto and the Open Data Portal for providing access to the dataset through the opendatatoronto package [@opendatatoronto]. The availability of such high-quality, open-source data is vital for conducting meaningful and impactful research.
 
 Finally, we would like to thank all those who contributed to the development and maintenance of the R programming language and its ecosystem, as well as the broader open-source community, whose efforts make such research possible.
-
-# Appendix
 
 ## Data Cleaning
 
