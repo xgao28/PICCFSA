@@ -7,9 +7,11 @@
 # read in the raw data
 data <- read.csv("data/raw_data/raw_piccfsa.csv")
 
-# removed unnecessary columns
+# removed unnecessary columns and NA observations
 data_1 <- data %>% janitor::clean_names() %>% 
-  select(-x_id, -hood_140, -neighbourhood_140)
+  select(-x_id, -hood_140, -neighbourhood_140, -division, -occurrence_created, -apprehension_made) %>% 
+  mutate(across(where(is.character), ~ na_if(., "NSA"))) %>% 
+  drop_na()
 
 # Factor day of week and month for correct ordering
 data_1$event_dow <- factor(data_1$event_dow, 

@@ -7,6 +7,8 @@
 library(tidyverse)
 library(lubridate)
 
+## simulated data test
+
 data <- read.csv("data/raw_data/simulated_piccfsa.csv")
 
 # date in range
@@ -26,6 +28,30 @@ test_dow_range <- all(data$EVENT_DOW %in% dow_levels)
 # types are correctly generated
 type_levels <- c("Suicide-related", "Overdose", "Person in Crisis")
 test_type_range <- all(data$EVENT_TYPE %in% type_levels)
+
+print(c(test_date_range, test_month_range, test_dow_range, test_type_range))
+
+
+# cleaned data test
+data <- read.csv("data/analysis_data/piccfsa.csv")
+
+# date in range
+start_time <- as_date("2014-01-01")
+end_time <- as_date("2024-06-30")
+test_date_range <- all(data$event_date >= start_time & data$event_date <= end_time)
+
+# months are correctly generated
+month_levels <- c("January", "February", "March", "April", "May", "June",
+                  "July", "August", "September", "October", "November", "December")
+test_month_range <- all(data$event_month %in% month_levels)
+
+# day of weeks are correctly generated
+dow_levels <- c("Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday")
+test_dow_range <- all(data$event_dow %in% dow_levels)
+
+# types are correctly generated
+type_levels <- c("Suicide-related", "Overdose", "Person in Crisis")
+test_type_range <- all(data$event_type %in% type_levels)
 
 print(c(test_date_range, test_month_range, test_dow_range, test_type_range))
 

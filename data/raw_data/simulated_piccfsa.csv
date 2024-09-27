@@ -1,4 +1,4 @@
-"OBJECTID","EVENT_ID","EVENT_DATE","EVENT_YEAR","EVENT_MONTH","EVENT_DOW","EVENT_HOUR","EVENT_TYPE","HOOD_158","NEIGHBOURHOOD_158"
+"objectid","event_id","event_date","event_year","event_month","event_dow","event_hour","event_type","hood_158","neighbourhood_158"
 1,14457356,2016-03-20,2016,"March","Sunday",18,"Person in Crisis",130,"Neighborhood 130"
 2,23561526,2020-10-02,2020,"October","Friday",23,"Overdose",74,"Neighborhood 74"
 3,20859153,2014-09-05,2014,"September","Friday",9,"Overdose",7,"Neighborhood 7"

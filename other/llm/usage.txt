@@ -206,3 +206,39 @@ sort(): This sorts the vector of unique values in ascending order.
 If hood_158 is a factor and you want to reorder its levels, then reorder() can be useful, but in this case, it seems unnecessary. Let me know if you’re looking for a specific ordering behavior!
 
 
+event_colors <- c("Overdose" = "#FF5733",      # Red-orange for Overdose
+                  "Person in Crisis" = "#33C3FF",  # Blue for Person in Crisis
+                  "Suicide-related" = "#75FF33")  # Green for Suicide-related
+
+User: 
+Provide a more academic color palette
+
+ChatGPT：
+For a more academic and professional look, you can use a muted or pastel color palette, which tends to be easier on the eyes and provides a clear distinction between categories while maintaining a formal appearance. Here's an example using a more subdued, academic color palette:
+
+r
+# Define a more academic color palette for each event type
+event_colors <- c("Overdose" = "#A6611A",       # Muted brown
+                  "Person in Crisis" = "#5AB4AC",  # Soft teal
+                  "Suicide-related" = "#8073AC")   # Muted purple
+Color Rationale:
+#A6611A: A muted brown shade for "Overdose" gives a serious and grounded tone.
+#5AB4AC: A soft teal for "Person in Crisis" provides a calming and neutral feel.
+#8073AC: A muted purple for "Suicide-related" strikes a balance between being distinctive and not overly vibrant.
+These colors are taken from color schemes often used in academic and scientific visualizations, providing clarity and professionalism without overwhelming the viewer with overly bright or stark contrasts. You can also adjust the palette if needed based on the context or your institution's preferences.
+
+User：
+Another one. These are too bad
+ChatGPT:
+Here's another refined academic color palette, often used in research papers, presentations, and scientific visualizations. This palette uses cooler tones with a neutral balance, providing a clean, professional look:
+
+r
+# Define a refined academic color palette for each event type
+event_colors <- c("Overdose" = "#1B9E77",      # Deep green
+                  "Person in Crisis" = "#D95F02",  # Muted orange
+                  "Suicide-related" = "#7570B3")   # Slate blue
+Color Rationale:
+#1B9E77: A deep green, often associated with stability and resilience, works well for serious topics like "Overdose."
+#D95F02: A muted, earthy orange provides a less aggressive, yet still noticeable tone for "Person in Crisis."
+#7570B3: Slate blue, a sophisticated and subtle color, aligns well with the sensitivity required for "Suicide-related" events.
+This color palette is muted but still provides distinct and clear differentiation between categories, offering a professional and polished appearance.
